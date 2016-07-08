@@ -8,8 +8,30 @@ namespace Bearcam
 {
     public partial class ViewController : UIViewController
     {
+        AVAsset asset;
+        AVPlayerItem playerItem;
+        AVPlayer player;
+        AVPlayerLayer playerLayer;
+
         public ViewController (IntPtr handle) : base (handle)
         {
+        }
+
+        public void ActivateWebcam (NSUrl url)
+        {
+            if (playerLayer != null)
+            {
+                playerLayer.RemoveFromSuperLayer ();
+            }
+            asset = AVAsset.FromUrl (url);
+            playerItem = new AVPlayerItem (asset);
+            player = new AVPlayer (playerItem);
+            playerLayer = AVPlayerLayer.FromPlayer (player);
+            var frame = new CGRect (0, 0, this.View.Frame.Width, this.View.Frame.Height);
+            playerLayer.Frame = frame;
+            this.View.Layer.AddSublayer (playerLayer);
+            player.Play ();
+
         }
 
         public override void ViewDidLoad ()
@@ -17,18 +39,6 @@ namespace Bearcam
             base.ViewDidLoad ();
             // Perform any additional setup after loading the view, typically from a nib.
 
-            var baseUrl = NSUrl.FromString("https://www.youtube.com/watch?v=gtUucAcQoaE");
-            var vs = YoutubeParser.VideosForUrl (baseUrl);
-
-            var src = vs["live"];
-            var asset = AVAsset.FromUrl(src);
-            var playerItem = new AVPlayerItem(asset);
-            var player = new AVPlayer (playerItem);
-            var playerLayer = AVPlayerLayer.FromPlayer (player);
-            var frame = new CGRect (0, 0, this.View.Frame.Width, this.View.Frame.Height);
-            playerLayer.Frame = frame;
-            this.View.Layer.AddSublayer (playerLayer);
-            player.Play ();
 
         }
 

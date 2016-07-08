@@ -117,6 +117,43 @@ namespace Bearcam
 
             return vs;
         }
+
+        internal static WebcamData WebcamForUrl (NSUrl url)
+        {
+            var id = YoutubeParser.IdForUrl (url);
+            var uri = YOUTUBE_INFO_URL + id;
+            using (var c = new WebClient ())
+            {
+                c.Headers.Add (HttpRequestHeader.UserAgent, USER_AGENT);
+                var resultString = c.DownloadString (uri);
+                var dict = resultString.DictionaryFromQueryStringComponents ();
+                if (dict == null)
+                {
+                    throw new NullReferenceException ();
+                }
+                if (dict.ContainsKey ("live_playback") && dict.ContainsKey ("hlsvp"))
+                {
+                    var src = NSUrl.FromString (WebUtility.UrlDecode (dict ["hlsvp"]));
+                    var title = WebUtility.UrlDecode(dict["title"]);
+                    var thumbnailUrl = NSUrl.FromString(WebUtility.UrlDecode(dict ["thumbnail_url"]));
+                    var thumbnail = WebcamThumbnail.Unknown;
+                    if (thumbnailUrl != null)
+                    {
+                        try
+                        {
+                            var imgData = NSData.FromUrl (thumbnailUrl);
+                            thumbnail = new UIKit.UIImage (imgData);
+                        }
+                        catch (Exception x)
+                        {
+                            //Swallow it -- some problem either with delivery or creation
+                        }
+                    }
+                    return new WebcamData { Url = src, Title = title, Thumbnail = thumbnail };
+                }
+            }
+                throw new Exception ();
+        }
     }
 }
 

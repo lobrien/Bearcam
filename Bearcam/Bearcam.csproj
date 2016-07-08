@@ -129,9 +129,21 @@
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="YoutubeParser.cs" />
+    <Compile Include="WebcamCell.cs" />
+    <Compile Include="WebcamCell.designer.cs">
+      <DependentUpon>WebcamCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WebcamCollectionViewController.cs" />
+    <Compile Include="WebcamCollectionViewController.designer.cs">
+      <DependentUpon>WebcamCollectionViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WebcamData.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\bear_thumbnail.jpeg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\TVOS\Xamarin.TVOS.CSharp.targets" />
 </Project>
